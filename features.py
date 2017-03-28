@@ -2,23 +2,27 @@ from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 
 # See more at: http://scikit-learn.org/stable/modules/feature_extraction.html#tfidf-term-weighting
 
-def tf_idf_fit_transform(X_train):
-	tfidf = TfidfVectorizer(max_features = 20000)
-	train_features = tfidf.fit_transform(X_train).toarray()
-	return train_features, tfidf
-	
-def tf_idf_transform(X_test, tfidf):
-	return tfidf.transform(X_test)
-	
-def bow_fit_transform(X_train):
-	vectorizer = CountVectorizer(analyzer = "word", tokenizer = None, \
-							preprocessor = None, stop_words = None,   \
-							max_features = 5000)
-	train_features = vectorizer.fit_transform(X_train).toarray()
-	return train_features, vectorizer
+class Tf_Idf:
+	tfidf = TfidfVectorizer()
+	def fit_transform(self, X_train):
+		self.tfidf = TfidfVectorizer(max_features = 20000)
+		train_features = self.tfidf.fit_transform(X_train).toarray()
+		return train_features;
 
-def bow_transform(X_train, vectorizer):
-	return vectorizer.transform(X_train)
+	def transform(self, X_test):
+		return self.tfidf.transform(X_test)
+		
+class BoW:
+	vectorizer = CountVectorizer()
+	def fit_transform(self, X_train):
+		self.vectorizer = CountVectorizer(analyzer = "word",		\
+							tokenizer = None, preprocessor = None,	\
+							stop_words = None, max_features = 5000)
+		train_features = self.vectorizer.fit_transform(X_train).toarray()
+		return train_features;
+
+	def transform(self, X_test):
+		return self.vectorizer.transform(X_test)
 
 def custom_features(X_train, X_test): # TODO:revrite
     # Constructs feature vector of custom features.
