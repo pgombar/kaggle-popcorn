@@ -1,33 +1,26 @@
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 
+# See more at: http://scikit-learn.org/stable/modules/feature_extraction.html#tfidf-term-weighting
 
-def tf_idf(X_train, y_train, X_test):
-    # Constructs a feature vector of tf-idf scores.
-    # See more at: http://scikit-learn.org/stable/modules/feature_extraction.html#tfidf-term-weighting
+def tf_idf_fit_transform(X_train):
+	tfidf = TfidfVectorizer(max_features = 20000)
+	train_features = tfidf.fit_transform(X_train).toarray()
+	return train_features, tfidf
+	
+def tf_idf_transform(X_test, tfidf):
+	return tfidf.transform(X_test)
+	
+def bow_fit_transform(X_train):
+	vectorizer = CountVectorizer(analyzer = "word", tokenizer = None, \
+							preprocessor = None, stop_words = None,   \
+							max_features = 5000)
+	train_features = vectorizer.fit_transform(X_train).toarray()
+	return train_features, vectorizer
 
-    tfidf = TfidfVectorizer()
-    train_features = tfidf.fit_transform(X_train).toarray()
-    test_features = tfidf.transform(X_test).toarray()
+def bow_transform(X_train, vectorizer):
+	return vectorizer.transform(X_train)
 
-    return train_features, test_features
-
-
-def bow(X_train, y_train, X_test):
-    # Constructs a bag of words feature vector.
-    # See more at: http://scikit-learn.org/stable/modules/feature_extraction.html#the-bag-of-words-representation
-
-    vectorizer = CountVectorizer(analyzer = "word",   \
-                                 tokenizer = None,    \
-                                 preprocessor = None, \
-                                 stop_words = None,   \
-                                 max_features = 5000)
-    train_features = vectorizer.fit_transform(X_train).toarray()
-    test_features = vectorizer.transform(X_test).toarray()
-
-    return train_features, test_features
-
-
-def custom_features(X_train, y_train, X_test):
+def custom_features(X_train, X_test): # TODO:revrite
     # Constructs feature vector of custom features.
     # Write your own function and append it to the feature vector.
 
