@@ -2,6 +2,7 @@
 # 				 and a .predict(X) function
 # Features has to have a .fit_transform function,
 #				   and a .transform     function
+#				   and a .name			string
 
 from preprocessing import get_train_data, get_test_data, \
 							Get_Testing_Data, Write_Predictions
@@ -17,40 +18,45 @@ def evaluate(y_true, y_predicted):
 	return roc_auc_score(y_true, y_predicted)
 
 # Fits model, transforms features, evaluates results
-def evaluate_model_feature(model_name, model, feature_name, feature, ratio = 0.7):
-	print 'Testing ' + model_name + ' with ' + feature_name
-	start = time.time()
+def evaluate_model_feature(model_name, model, feature, ratio = 0.7):
+	print 'Testing ' + model_name + ' with ' + feature.name
+	start = time.time(); feature_name = feature.name;
 	
 # Model fitting
-	X_train, Y_train = get_train_data(ratio);
+	X_train, Y_train = get_train_data(ratio)
 	rprint('Feature extraction of train data')
-	train_features = feature.fit_transform(X_train);
+	train_features = feature.fit_transform(X_train)
 	del X_train								#a lot of memory
 	rprint('Fitting ' + model_name)
 	model.fit(train_features, Y_train)		# may use too much ram
 	
 # Test on train data
-	rprint('Evaluating train data')
+	rprint('Creating predictions for train data')
 	predictions_train = model.predict(train_features)
 	del train_features;						#a lot of memory
+	rprint('Evaluating predictions for train data')
 	score_train = evaluate(Y_train, predictions_train)
 	del predictions_train;	del Y_train;	#not much memory
 	
 	if ratio < 1:
 # Testing on the test data
-		rprint('Evaluating test data');
 		X_test,  Y_test  = get_test_data(ratio)
+		rprint('Feature extraction of test data')
 		test_features  = feature.transform(X_test)
 		del X_test; del feature;			#not much memory
+		rprint('Creating predictions for test data')
 		predictions_test  = model.predict(test_features)
 		del test_features; del model;			#maybe a lot of memory
+		rprint('Evaluating predictions for test data')
 		score_test = evaluate(Y_test, predictions_test)
 		del predictions_test;	del Y_test;		#not much memory
 	else:
 # Generating output csv for ratio = 1
 		Data, IDs = Get_Testing_Data()
+		rprint('Feature extraction of Kaggle test data')
 		Data_features = feature.transform(Data)
 		del Data; del feature;
+		rprint('Creating predictions for Kaggle test data')
 		Predictions = model.predict(Data_features)
 		del Data_features; del model;
 		Write_Predictions("output.csv", IDs, Predictions)

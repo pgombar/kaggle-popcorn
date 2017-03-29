@@ -22,6 +22,8 @@ X_Test_cache_path = "cache/X_test_%.1f.bin"
 Y_Test_cache_path = "cache/Y_test_%.1f.bin"
 Test_cache_path = "cache/Test.bin"
 
+random_seed_for_splitting = 42;
+
 def get_train_data(ratio = 0.7):	# Loads train data from cache (creates it if needed)
 	preprocess(ratio)
 	X_train, Y_train = load_train_data()
@@ -93,7 +95,7 @@ def get_train_test_sets(ratio = 0.7):
 	clean_reviews = clean_data(data)
 	rprint("Splitting cleaned data...")
 	X_train, X_test, Y_train, Y_test = train_test_split(clean_reviews, np.array(data["sentiment"]), \
-											train_size=ratio, random_state=42)
+											train_size=ratio, random_state=random_seed_for_splitting)
 	del data
 	return X_train, X_test, Y_train, Y_test
 		
