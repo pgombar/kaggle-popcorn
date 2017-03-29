@@ -15,7 +15,7 @@ models = {"mnb" :	("Multinomial Naive Bayes",	MultinomialNB()), \
 features = {"tftidf": Tf_Idf(), 	\
 			"bow":	  BoW() ,		\
 			"custom": Fcustom(),	\
-			"concat": Fconcat(BoW(), Tf_Idf())}
+			"concat": Fconcat(BoW(), Tf_Idf(), Fcustom())}
 
 def test_all(ratio = 0.7):
 	for model_key in models:
