@@ -7,8 +7,8 @@ import nltk
 # See more at: http://scikit-learn.org/stable/modules/feature_extraction.html#tfidf-term-weighting
 from scipy.sparse import vstack, hstack
 
-class Fhasher:
-	name = "Feature Hasher"
+class Fhasher:# MY COMMIT IS BETTER
+	name = "Feature Hasher2"
 	fhasher = 0
 	def  fit_transform(self, X_train):
 		self.fhasher = FeatureHasher(input_type='string')
