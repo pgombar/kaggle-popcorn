@@ -7,8 +7,8 @@ import nltk
 # See more at: http://scikit-learn.org/stable/modules/feature_extraction.html#tfidf-term-weighting
 from scipy.sparse import vstack, hstack
 
-class Fhasher:# MY COMMIT IS BETTER
-	name = "Feature Hasher2"
+class Fhasher:
+	name = "#Csaba Hasher2"
 	fhasher = 0
 	def  fit_transform(self, X_train):
 		self.fhasher = FeatureHasher(input_type='string')
@@ -68,7 +68,7 @@ class PosNeg:#Panni
         n.close()
         return set(pos.split()), set(neg.split())
 
-class Fconcat:
+class Fconcat: # Concatenates features
 	name = "Concatenated "
 	features = [];
 	def __init__(self, *Features):
