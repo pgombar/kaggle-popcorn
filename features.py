@@ -1,16 +1,31 @@
-from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
+from sklearn.feature_extraction.text import \
+	TfidfVectorizer,	\
+	CountVectorizer,	\
+	FeatureHasher
 import numpy as np
+import nltk
 # See more at: http://scikit-learn.org/stable/modules/feature_extraction.html#tfidf-term-weighting
+from scipy.sparse import vstack, hstack
 
+class Fhasher:
+	name = "Feature Hasher"
+	fhasher = 0
+	def  fit_transform(self, X_train):
+		self.fhasher = FeatureHasher(input_type='string')
+		return self.fhasher.fit_transform(X_train)
+		
+	def  transform(self, X_train):
+		return self.fhasher.transform(X_train)
+		
 class Tf_Idf:
 	name = "Term-Frequency times Inverse Document-Frequency"
 	tfidf = 0
 	def fit_transform(self, X_train):
 		self.tfidf = TfidfVectorizer(max_features = 10000)
-		return self.tfidf.fit_transform(X_train).toarray()
+		return self.tfidf.fit_transform(X_train)
 
 	def transform(self, X_test):
-		return self.tfidf.transform(X_test).toarray()
+		return self.tfidf.transform(X_test)
 		
 class BoW:
 	name = "Bag Of Words"
@@ -19,33 +34,58 @@ class BoW:
 		self.vectorizer = CountVectorizer(analyzer = "word",		\
 							tokenizer = None, preprocessor = None,	\
 							stop_words = None, max_features = 5000)
-		return self.vectorizer.fit_transform(X_train).toarray()
+		return self.vectorizer.fit_transform(X_train)
 
 	def transform(self, X_test):
-		return self.vectorizer.transform(X_test).toarray()
+		return self.vectorizer.transform(X_test)
+
+class PosNeg:#Panni
+    name = "Set of positive and negative words"
+    pos, neg = 0, 0
+    def fit_transform(self, X_set):
+		self.pos, self.neg = self.wordsFromFiles()
+		return self.transform(X_set)
+    
+    def transform(self, X_set):
+        feature_vector_all = []
+        for review in X_set:
+            words = review.split()
+            p, n = 0, 0
+            for word in words:
+                if word in self.pos:
+                    p = p + 1
+                if word in self.neg:
+                    n = n + 1
+            feature_vector_all.append([p,n, p-n])
+        return feature_vector_all
+    
+    def wordsFromFiles(self):
+        with open('positive-words.txt', 'r') as p:
+            pos = p.read()
+        p.close()
+        with open('negative-words.txt', 'r') as n:
+            neg = n.read()
+        n.close()
+        return set(pos.split()), set(neg.split())
 
 class Fconcat:
 	name = "Concatenated "
 	features = [];
 	def __init__(self, *Features):
-		self.features = Features
-		self.name = "Concatenated("
+		self.name, self.features = "Concatenated(", Features
 		for f in self.features:
-			self.name = self.name + f.name + " and "
+			self.name = self.name + f.name + " AND "
 		self.name = self.name[0:len(self.name)-5] + ")"
 	
 	def fit_transform(self, X_train):
 		ls = map(lambda f: f.fit_transform(X_train), self.features)
-		return np.concatenate(tuple(ls), axis = 1)
+		return hstack(ls)
+		#return np.concatenate(tuple(ls), axis = 1)
 
 	def transform(self, X_test):
 		ls = map(lambda f: f.transform(X_test), self.features)
-		return np.concatenate(tuple(ls), axis = 1)
-
-def custom_feature_list(review):
-	words = review.split(' ')
-	length = sum([len(word) for word in words])
-	return [len(words), float(length) / len(words)]
+		return hstack(ls)
+		#return np.concatenate(tuple(ls), axis = 1)
 
 class Fcustom:	# Same as Paula's custom_features in earlier versions
 	name = "word count and mean word length"
@@ -55,5 +95,9 @@ class Fcustom:	# Same as Paula's custom_features in earlier versions
 	def transform(self, X_test):
 		train_fs = []
 		for review in X_test:
-			train_fs.append(custom_feature_list(review))
+			train_fs.append(self.custom_feature_list(review))
 		return np.asarray(train_fs);
+	def custom_feature_list(self, review):
+		words = review.split(' ')
+		length = sum([len(word) for word in words])
+		return [len(words), float(length) / len(words)]

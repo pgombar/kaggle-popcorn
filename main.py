@@ -13,9 +13,11 @@ models = {"mnb" :	("Multinomial Naive Bayes",	MultinomialNB()), \
 # Set of feature extractors
 #			 key	  feature class
 features = {"tftidf": Tf_Idf(), 	\
-			"bow":	  BoW() ,		\
+			"bow"	: BoW() ,		\
 			"custom": Fcustom(),	\
-			"concat": Fconcat(BoW(), Tf_Idf(), Fcustom())}
+			"hash"	: Fhasher(),	\
+			"posneg": PosNeg(),		\
+			"concat": Fconcat(Tf_Idf(), BoW(), Fcustom(), Fhasher(), PosNeg())}
 
 def test_all(ratio = 0.7):
 	for model_key in models:
@@ -25,13 +27,21 @@ def test_all(ratio = 0.7):
 			evaluate_model_feature(model[0], model[1], feature, ratio)
 
 def test(model_key, feature_key, ratio = 0.7):
-	model = models[model_key]
-	feature = features[feature_key]
+	model, feature = models[model_key], features[feature_key]
 	evaluate_model_feature(model[0], model[1], feature, ratio)
+# feature detectors:
+#	N-gramms
+#	Word2Vec
+# classifiers:
+#	Vawpal Wabbit
+
+# + semi supervised learning
 
 def main():
-	test('bnb','custom', 0.7)
+	#test_all(0.7)
 	test('bnb','concat', 0.7)
+	#test('bnb','hash', 0.7)
+	#test('bnb','custom', 0.7)
 	#test_all()
 	
 if __name__ == "__main__":

@@ -78,10 +78,9 @@ def review_to_words(raw_review , stops): # cleans a review
 
 def clean_data(pd_data): 				# cleans raw data
 	rprint("Building stopwords dictionary...")
-	clean_reviews = []
+	clean_reviews, reviews = [], pd_data["review"]
 	stops = set(stopwords.words("english")) # precalculating makes it faster
-	reviews = pd_data["review"];
-	n = len(reviews); 	i = 0;
+	n, i = len(reviews), 0
 	for rev in reviews:
 		if i % (n/200) == 0:
 			rprint("Cleaning reviews (%d %%)" % (100*i/n))
