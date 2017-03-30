@@ -8,7 +8,7 @@ import nltk
 from scipy.sparse import vstack, hstack
 
 class Fhasher:
-	name = "Feature Hasher"
+	name = "#Csaba"
 	fhasher = 0
 	def  fit_transform(self, X_train):
 		self.fhasher = FeatureHasher(input_type='string')
@@ -68,7 +68,7 @@ class PosNeg:#Panni
         n.close()
         return set(pos.split()), set(neg.split())
 
-class Fconcat:
+class Fconcat: # Concatenates features
 	name = "Concatenated "
 	features = [];
 	def __init__(self, *Features):
