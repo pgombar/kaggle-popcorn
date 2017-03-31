@@ -1,0 +1,77 @@
+Error to fix: Please help!
+
+So python (BeautifulSoup) throws an error while preprocessing reviews at
+almost at the end of the file. I have no idea why this happens, but here
+comes what I do know.
+It crashes with an error at the 45092nd review while cleaning the file
+"unlabelledTrainData.tsv". See call stack below. Since numbering started
+with 0, but the file line labeling starts with 1, and there is an extra
+line in the file, the error should be on the 45094th line.
+Copy-pasting the line to the interpreter and running the BeautifulSoup
+html tag cleaning command yields no error. All Other line in the
+neighbourhood work just fine as well. Googleing the error does not help
+either.
+
+45092th line's review:
+
+"As the only film Mitchell & Petrillo did together, this was an obvious attempt to duplicate the feel and tempo of a 1952 Paramount Martin & Lewis movie in virtually every detail. One wonders if there wasn't legal action against the producers of this picture for the obvious cloning of Martin & Lewis!<br /><br />Sammy Petrillo has the Jerry Lewis of 1952 nailed down perfectly and even above that--as a caricature! Duke Mitchell wasn't as good a Dean Martin, though, but a passable leading man and singer. Lugosi fans will like the big role he has in this picture. Too bad they weren't given other picture offers. The female and supporting players are all quite good. For a cheapie that was shot on a budget of $50,000, it has good production values--even the gorilla transformation scenes! Since this film is in the public domain, it turns up often in dollar DVD displays at many discount stores."
+
+45093th line's review:
+
+"\"Necronomicon\" is an analogy of three short stories:1)\"The Drowned\"(Christophe Gans)2)\"Cold\"(Shusuke Kaneko)and 3)\"Whispers\"(Brian Yuzna).In my opinion,the first one is the best one maybe because it's highly atmospheric and a little bit creepy.It has also very appealing cast(Bruce Payne,Richard Lynch or wonderful Belinda Bauer).The second one is very weak:boring and full of uninteresting characters.I didn't enjoy it.The third one is too bizarre and also very ridiculous.It has some nice gore effects and nothing more.I suggest you to watch only the first story-\"The Drowned\".Don't bother with rest.My evaluation:4/10 perhaps 5/10."
+
+45094th line's review:
+
+"A Lot of Dumbheads try to say look like ...... look like these idiot always love to look like something now mario kart idiot Mario kart bla bla was made after Twisted metal and Vigilante 8 these are basic car combat games like snes Rock and Roll racing D: relearn them then try to say look like ......<br /><br />And I m the fan of vigilante , twisted metal and Rock'n roll racing But death Race is a TV Show before all we said made it SO STFU DUmbheads İt's a awesome action game not like the others but You all IMDb's idiot knew everything better then others so U gave 6.4 or ~ like it Please don't watch movie may be you could read book your IQ will be upgraded SO go relearn all things go to the kindergarten"
+
+45095th line's review:
+
+"One of the most fascinating things about this film (apart from Jonathan Hyde's extraordinary resemblance with Henry Daniell)is watching how the plot meanders and wanders with no destination in sight as if it were an Art Nouveau filigrain.<br /><br />I suspect that the archeology academics would seriously object at the unorthodox -but revolutionary- system that the protagonist and his buddies use to find the legendary Pharaoh's tomb, namely, by sitting in the terraces of Cairo's seediest bars and leaving them without alcoholic stock. Their interest is, however, scientific, except for the legionnaire buddy who is more interested in gold statuettes accidentally getting lost in his greatcoat pockets (Having mentioned the legionnaire, I must say that I admire the courage of the scriptwriter, who reveals to us -for the very first time- that Egypt was at the time a French protectorate, and not, as we've been led to believe by the official history, associated to the British empire)<br /><br />The bad guys stick to the old, slow, boring system of studying the terrain and excavating carefully according to old Ieroglyphs, while our hero and his friends discover the tomb the legendary grave by happily throwing dynamite sticks at random: a new path is opened thus for archeology."
+
+
+The Error message:
+
+root@CSABALAPTOP:/mnt/c/Data/RU/Machine Learning/kaggle-popcorn# python main.py
+===========================================================
+Model:   Semi-supervised Multinomial Naive Bayes
+Feature: Word Count and Mean Word Length
+  Preprocessing : Cleaning reviews (90 %) 45092
+
+Traceback (most recent call last):
+  File "main.py", line 44, in <module>
+    main()
+  File "main.py", line 23, in main
+    test('superv','custom', 0.7)
+  File "main.py", line 41, in test
+    evaluate_model_feature(model, feature, ratio)
+  File "/mnt/c/Data/RU/Machine Learning/kaggle-popcorn/evaluation.py", line 34, in evaluate_model_feature
+    model.fit(train_features, Y_train)          # may use too much ram
+  File "/mnt/c/Data/RU/Machine Learning/kaggle-popcorn/models.py", line 45, in fit
+    X2 = Get_Unlabelled_Data()
+  File "/mnt/c/Data/RU/Machine Learning/kaggle-popcorn/preprocessing.py", line 58, in Get_Unlabelled_Data
+    clean_reviews = clean_data(data)
+  File "/mnt/c/Data/RU/Machine Learning/kaggle-popcorn/preprocessing.py", line 102, in clean_data
+    clean_reviews.append(review_to_words(rev, stops))
+  File "/mnt/c/Data/RU/Machine Learning/kaggle-popcorn/preprocessing.py", line 88, in review_to_words
+    review_text = BeautifulSoup(raw_review, "html5lib").get_text().lower()
+  File "/usr/local/lib/python2.7/dist-packages/bs4/__init__.py", line 228, in __init__
+    self._feed()
+  File "/usr/local/lib/python2.7/dist-packages/bs4/__init__.py", line 289, in _feed
+    self.builder.feed(self.markup)
+  File "/usr/local/lib/python2.7/dist-packages/bs4/builder/_html5lib.py", line 72, in feed
+    doc = parser.parse(markup, **extra_kwargs)
+  File "/usr/lib/python2.7/dist-packages/html5lib/html5parser.py", line 224, in parse
+    parseMeta=parseMeta, useChardet=useChardet)
+  File "/usr/lib/python2.7/dist-packages/html5lib/html5parser.py", line 88, in _parse
+    parser=self, **kwargs)
+  File "/usr/lib/python2.7/dist-packages/html5lib/tokenizer.py", line 40, in __init__
+    self.stream = HTMLInputStream(stream, encoding, parseMeta, useChardet)
+  File "/usr/lib/python2.7/dist-packages/html5lib/inputstream.py", line 137, in HTMLInputStream
+    return HTMLBinaryInputStream(source, encoding, parseMeta, chardet)
+  File "/usr/lib/python2.7/dist-packages/html5lib/inputstream.py", line 419, in __init__
+    self.reset()
+  File "/usr/lib/python2.7/dist-packages/html5lib/inputstream.py", line 422, in reset
+    self.dataStream = codecs.getreader(self.charEncoding[0])(self.rawStream,
+  File "/usr/lib/python2.7/codecs.py", line 981, in getreader
+    return lookup(encoding).streamreader
+LookupError: unknown encoding: EUC-TW

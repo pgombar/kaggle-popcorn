@@ -7,16 +7,6 @@ import nltk
 # See more at: http://scikit-learn.org/stable/modules/feature_extraction.html#tfidf-term-weighting
 from scipy.sparse import vstack, hstack
 
-class Fhasher:
-	name = "#Csaba Hasher2"
-	fhasher = 0
-	def  fit_transform(self, X_train):
-		self.fhasher = FeatureHasher(input_type='string')
-		return self.fhasher.fit_transform(X_train)
-		
-	def  transform(self, X_train):
-		return self.fhasher.transform(X_train)
-		
 class Tf_Idf:
 	name = "Term-Frequency times Inverse Document-Frequency"
 	tfidf = 0
@@ -40,7 +30,7 @@ class BoW:
 		return self.vectorizer.transform(X_test)
 
 class PosNeg:#Panni
-    name = "Set of positive and negative words"
+    name = "Set of Positive and Negative words"
     pos, neg = 0, 0
     def fit_transform(self, X_set):
 		self.pos, self.neg = self.wordsFromFiles()
@@ -49,9 +39,8 @@ class PosNeg:#Panni
     def transform(self, X_set):
         feature_vector_all = []
         for review in X_set:
-            words = review.split()
             p, n = 0, 0
-            for word in words:
+            for word in review.split():
                 if word in self.pos:
                     p = p + 1
                 if word in self.neg:
@@ -88,7 +77,7 @@ class Fconcat: # Concatenates features
 		#return np.concatenate(tuple(ls), axis = 1)
 
 class Fcustom:	# Same as Paula's custom_features in earlier versions
-	name = "word count and mean word length"
+	name = "Word Count and Mean Word Length"
 	def fit_transform(self, X_train):
 		return self.transform(X_train)
 		

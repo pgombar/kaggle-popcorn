@@ -14,13 +14,15 @@ from bs4						import BeautifulSoup
 from sklearn.model_selection	import train_test_split
 import nltk, re, cPickle, os.path, sys, gzip
 
-labelled_data_path = "data/labeledTrainData.tsv" # data path
-Test_data_path = "data/testData.tsv" # data path
+labelled_data_path   = "data/labeledTrainData.tsv"	 # For supervised learning
+test_data_path 	     = "data/testData.tsv"			 # For Kaggle score
+unlabelled_data_path = "data/unlabeledTrainData.tsv" # For Unsupervised learning
 X_Train_cache_path = "cache/X_train_%.1f.bin"
 Y_Train_cache_path = "cache/Y_train_%.1f.bin"
 X_Test_cache_path = "cache/X_test_%.1f.bin"
 Y_Test_cache_path = "cache/Y_test_%.1f.bin"
 Test_cache_path = "cache/Test.bin"
+Unlabelled_cache_path = "cache/Unlabelled.bin"
 
 random_seed_for_splitting = 42;
 
@@ -39,7 +41,7 @@ def get_test_data(ratio = 0.7):	# Loads test data from cache (creates it if need
 def Get_Testing_Data():
 	if not os.path.isfile(Test_cache_path):
 		rprint("Loading raw test data")
-		data = pd.read_csv(Test_data_path, header=0, delimiter="\t", quoting=3)
+		data = pd.read_csv(test_data_path, header=0, delimiter="\t", quoting=3)
 		pair = (clean_data(data), data['id'])
 		del data
 		rprint("Saving Test data to cache")
@@ -48,6 +50,19 @@ def Get_Testing_Data():
 		rprint("Loading Test data from cache")
 		pair = load_zipped_pickle(Test_cache_path)
 	return pair[0], pair[1]	# text, ids
+	
+def Get_Unlabelled_Data():
+	if not os.path.isfile(Unlabelled_cache_path):
+		rprint("Loading raw unlabelled data")
+		data = pd.read_csv(unlabelled_data_path, header=0, delimiter="\t", quoting=3)
+		clean_reviews = clean_data(data)
+		del data
+		rprint("Saving unlabelled data to cache")
+		save_zipped_pickle(clean_reviews, Unlabelled_cache_path)
+	else:
+		rprint("Loading unlabelled data from cache")
+		clean_reviews = load_zipped_pickle(Unlabelled_cache_path)
+	return clean_reviews
 
 def Write_Predictions(path, ids, predictions):
 	output = pd.DataFrame( data={"id":ids, "sentiment":predictions} )
@@ -66,7 +81,7 @@ def preprocess(ratio = 0.7, rebuild_cache = False):
 		save_test_data(X_test,  Y_test, ratio)
 
 def rprint(str): # Next print overwrites this, eg use for indicate progress
-	sys.stdout.write("Preprocessing : " + str + "            \r")
+	sys.stdout.write("  Preprocessing : " + str + "            \r")
 	sys.stdout.flush()
 
 def review_to_words(raw_review , stops): # cleans a review
@@ -76,14 +91,14 @@ def review_to_words(raw_review , stops): # cleans a review
 	meaningful_words = [w for w in words if not w in stops]
 	return( " ".join( meaningful_words ))
 
-def clean_data(pd_data): 				# cleans raw data
+def clean_data(data): 				# cleans raw data
 	rprint("Building stopwords dictionary...")
-	clean_reviews, reviews = [], pd_data["review"]
+	clean_reviews, reviews = [], data["review"]
 	stops = set(stopwords.words("english")) # precalculating makes it faster
 	n, i = len(reviews), 0
 	for rev in reviews:
-		if i % (n/200) == 0:
-			rprint("Cleaning reviews (%d %%)" % (100*i/n))
+		#if i % (n/200) == 0:
+		rprint("Cleaning reviews (%d %%) %d" % (100*i/n, i))
 		clean_reviews.append(review_to_words(rev, stops))
 		i = i + 1
 	return clean_reviews
