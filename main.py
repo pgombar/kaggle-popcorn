@@ -20,7 +20,7 @@ features = {"tftidf": Tf_Idf(), 	\
 def main():
 	try:
 	
-		test('superv','custom', 0.7)
+		test('superv','posneg', 0.7)
 		#test('bnb','hash', 0.7)
 		#test('bnb','custom', 0.7)
 		#test_all()

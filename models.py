@@ -27,6 +27,7 @@ class RForest:
 	def predict(self, X):
 		return self.model.predict(X)
 
+# This is not yet working. I will try to make it work tomorrow night.
 class SemiSupervised:
 	model1, model2 = 0,0
 	name = 0;

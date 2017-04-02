@@ -85,7 +85,7 @@ def rprint(str): # Next print overwrites this, eg use for indicate progress
 	sys.stdout.flush()
 
 def review_to_words(raw_review , stops): # cleans a review
-	review_text = BeautifulSoup(raw_review, "html5lib").get_text().lower()
+	review_text = BeautifulSoup(raw_review, "html.parser").get_text().lower()
 	letters_only = re.sub("[^a-z]", " ", review_text)
 	words = letters_only.split()
 	meaningful_words = [w for w in words if not w in stops]
