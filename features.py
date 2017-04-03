@@ -3,6 +3,7 @@ from sklearn.feature_extraction.text import \
 	CountVectorizer,	\
 	FeatureHasher
 import numpy as np
+from numpy import __doc__
 import nltk
 # See more at: http://scikit-learn.org/stable/modules/feature_extraction.html#tfidf-term-weighting
 from scipy.sparse import vstack, hstack
@@ -90,3 +91,18 @@ class Fcustom:	# Same as Paula's custom_features in earlier versions
 		words = review.split(' ')
 		length = sum([len(word) for word in words])
 		return [len(words), float(length) / len(words)]
+
+class Ngram:
+	# set all n for n-grams that are taken into account.
+	# Includes BoW if range starts with 1 !
+	n = (1,3)
+	name = "n_gram"
+	vectorizer = 0
+	def fit_transform(self, X_set):
+		self.vectorizer = CountVectorizer(analyzer='word',min_df = (1/10000),
+		max_features=None, ngram_range=(1, 3), preprocessor=None, stop_words=None,
+		tokenizer=None)
+		return self.vectorizer.fit_transform(X_set)
+
+	def transform(self, X_set):
+		return self.vectorizer.transform(X_set)
