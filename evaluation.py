@@ -17,13 +17,14 @@ def evaluate(y_true, y_predicted):
 	# Evaluation metric is the area under the ROC-curve.
 	return roc_auc_score(y_true, y_predicted)
 
-# Fits model, transforms features, evaluates results
+
+# Fits model, transforms features, evaluates results, everything
 def evaluate_model_feature(model, feature, ratio = 0.7):
 	start = time.time();
+	model_name, feature_name = str(model), feature.name;
 	print "==========================================================="
-	print '\033[1mModel:   \033[07m\033[04m' + model.name   + '\033[0m'
-	print '\033[1mFeature: \033[07m\033[04m' + feature.name + '\033[0m'
-	model_name, feature_name = model.name, feature.name;
+	print '\033[1mModel:   \033[07m\033[04m' + model_name   + '\033[0m'
+	print '\033[1mFeature: \033[07m\033[04m' + feature_name + '\033[0m'
 	
 # Model fitting
 	X_train, Y_train = get_train_data(ratio)
@@ -31,7 +32,7 @@ def evaluate_model_feature(model, feature, ratio = 0.7):
 	train_features = feature.fit_transform(X_train)
 	del X_train								#a lot of memory
 	rprint('Fitting model                           ')
-	if model.feature is not None:
+	if str(model)[0:16] == "Semi-supervised ":
 		model.feature = feature
 	model.fit(train_features, Y_train)		# may use too much ram
 	

@@ -30,7 +30,7 @@ class BoW:
 	def transform(self, X_test):
 		return self.vectorizer.transform(X_test)
 
-class PosNeg:#Panni
+class PosNeg:	#Panni
     name = "Set of Positive and Negative words"
     pos, neg = 0, 0
     def fit_transform(self, X_set):

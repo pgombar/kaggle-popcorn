@@ -1,13 +1,15 @@
 from evaluation import evaluate_model_feature
 from features import *
 from models import *
+from sklearn.naive_bayes import BernoulliNB, MultinomialNB
+from sklearn.ensemble import RandomForestClassifier
 
 # Set of classifier models
 #		   key		  model
-models = {"mnb" :	Mnb(),		\
-		  "bnb":	Bnb(),		\
-		  "forest": RForest(),	\
-		  "superv": SemiSupervised(Mnb())}
+models = {"mnb" :	MultinomialNB(),							\
+		  "bnb":	BernoulliNB(),								\
+		  "forest": RandomForestClassifier(n_estimators = 100),	\
+		  "superv": SemiSupervised(MultinomialNB())}
 
 # Set of feature extractors
 #			 key	  feature class
@@ -20,10 +22,12 @@ features = {"tftidf": Tf_Idf(), 	\
 
 def main():
 	try:
-		test(Fconcat(Tf_Idf(), Ngram(), PosNeg()), RForest())
-		test(Fconcat(Ngram(), PosNeg()), Mnb())
-		test(Fconcat(Ngram(), Tf_Idf()), Mnb())
-		test(Ngram(), Mnb())
+		test(Ngram(), SemiSupervised(MultinomialNB()))
+		test(Ngram(), MultinomialNB())
+		#test(Fconcat(Tf_Idf(), Ngram(), PosNeg()), RForest())
+		#test(Fconcat(Ngram(), PosNeg()), Mnb())
+		#test(Fconcat(Ngram(), Tf_Idf()), Mnb())
+		#test(Ngram(), Mnb())
 
 		#test_all()
 	
