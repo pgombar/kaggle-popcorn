@@ -30,11 +30,13 @@ def evaluate_model_feature(model, feature, ratio = 0.7):
 	rprint('Feature extraction of train data')
 	train_features = feature.fit_transform(X_train)
 	del X_train								#a lot of memory
-	rprint('Fitting model')
+	rprint('Fitting model                           ')
+	if model.feature is not None:
+		model.feature = feature
 	model.fit(train_features, Y_train)		# may use too much ram
 	
 # Test on train data
-	rprint('Creating predictions for train data')
+	rprint('Creating predictions for train data     ')
 	predictions_train = model.predict(train_features)
 	del train_features;						#a lot of memory
 	rprint('Evaluating predictions for train data')

@@ -6,7 +6,7 @@ import numpy as np
 from numpy import __doc__
 import nltk
 # See more at: http://scikit-learn.org/stable/modules/feature_extraction.html#tfidf-term-weighting
-from scipy.sparse import vstack, hstack
+from scipy.sparse import hstack
 
 class Tf_Idf:
 	name = "Term-Frequency times Inverse Document-Frequency"
@@ -46,7 +46,9 @@ class PosNeg:#Panni
                     p = p + 1
                 if word in self.neg:
                     n = n + 1
-            feature_vector_all.append([p,n, p-n])
+            feature_vector_all.append([p,n, float(p)/float(n+0.1)])
+			# I had to change this to a ratio so its positive;
+			# MNB model does not work with negative values.
         return feature_vector_all
     
     def wordsFromFiles(self):
@@ -96,11 +98,14 @@ class Ngram:
 	# set all n for n-grams that are taken into account.
 	# Includes BoW if range starts with 1 !
 	n = (1,3)
-	name = "n_gram"
 	vectorizer = 0
+	name = "N-gram"
+	def __init__(self, n_range = (1,3)):
+		self.n = n_range
+		
 	def fit_transform(self, X_set):
 		self.vectorizer = CountVectorizer(analyzer='word',min_df = (1/10000),
-		max_features=None, ngram_range=(1, 3), preprocessor=None, stop_words=None,
+		max_features=None, ngram_range=self.n, preprocessor=None, stop_words=None,
 		tokenizer=None)
 		return self.vectorizer.fit_transform(X_set)
 

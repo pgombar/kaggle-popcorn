@@ -15,14 +15,16 @@ features = {"tftidf": Tf_Idf(), 	\
 			"bow"	: BoW() ,		\
 			"custom": Fcustom(),	\
 			"posneg": PosNeg(),		\
-			"concat": Fconcat(Tf_Idf(), BoW(), Fcustom(), PosNeg())}
+			"ngram" : Ngram(),		\
+			"concat": Fconcat(Tf_Idf(), Ngram(), PosNeg())}
 
 def main():
 	try:
-	
-		test('superv','posneg', 0.7)
-		#test('bnb','hash', 0.7)
-		#test('bnb','custom', 0.7)
+		test(Fconcat(Tf_Idf(), Ngram(), PosNeg()), RForest())
+		test(Fconcat(Ngram(), PosNeg()), Mnb())
+		test(Fconcat(Ngram(), Tf_Idf()), Mnb())
+		test(Ngram(), Mnb())
+
 		#test_all()
 	
 	except:
@@ -33,11 +35,9 @@ def test_all(ratio = 0.7):
 	for model_key in models:
 		model = models[model_key]
 		for feature_key in features:
-			feature = features[feature_key]
-			evaluate_model_feature(model, feature, ratio)
+			test(models[model_key], features[feature_key], ratio)
 
-def test(model_key, feature_key, ratio = 0.7):
-	model, feature = models[model_key], features[feature_key]
+def test(feature, model, ratio = 0.7):
 	evaluate_model_feature(model, feature, ratio)
 		
 if __name__ == "__main__":
