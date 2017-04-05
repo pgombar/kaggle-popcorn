@@ -22,6 +22,8 @@ Now I set the minimum document-frequency to 1/10000 and it improved the BoW for 
 Yet it might be beneficial to indeed include a lot of features when involving 2- and 3-grams. Do you have an idea for a good classifier that can handle a lot of features ?
 
 ## About no-grams idea:
+I opened another branch for no-grams because I had to remove a lot of stopwords.
+It's prediction power is not better than randomness. I think because a no-gram in average only appears in every third review.
 
 Creating 2-grams of the form: no+adjective and then:
 if adj = positive --> 2-gram is negative 2-gram
