@@ -18,12 +18,14 @@ features = {"tftidf": Tf_Idf(), 	\
 			"custom": Fcustom(),	\
 			"posneg": PosNeg(),		\
 			"ngram" : Ngram(),		\
+			"nogram": NoGram(),		\
 			"concat": Fconcat(Tf_Idf(), Ngram(), PosNeg())}
 
 def main():
 	try:
-		test(Ngram(), SemiSupervised(MultinomialNB()))
-		test(Ngram(), MultinomialNB())
+		test(NoGram(), MultinomialNB())
+		#test(Ngram(), SemiSupervised(MultinomialNB()))
+		#test(Ngram(), MultinomialNB())
 		#test(Fconcat(Tf_Idf(), Ngram(), PosNeg()), RForest())
 		#test(Fconcat(Ngram(), PosNeg()), Mnb())
 		#test(Fconcat(Ngram(), Tf_Idf()), Mnb())

@@ -3,6 +3,7 @@ from sklearn.feature_extraction.text import \
 	CountVectorizer,	\
 	FeatureHasher
 import numpy as np
+from spacy.en import English
 from numpy import __doc__
 import nltk
 # See more at: http://scikit-learn.org/stable/modules/feature_extraction.html#tfidf-term-weighting
@@ -111,3 +112,47 @@ class Ngram:
 
 	def transform(self, X_set):
 		return self.vectorizer.transform(X_set)
+
+
+class NoGram:
+	name = "nogram"
+	BADNAMES = ["ain", "aren", "wasn", "weren", "wouldn", "hadn", "hasn", "no", "not", "nor", "isn", "didn", "doesn",
+				"don", "couldn"]
+	parser = English()
+	n = 2  # SET n for creating no-grams with n or less words
+
+	def fit_transform(self, X_set):
+		self.pos, self.neg = self.wordsFromFiles()
+		return self.transform(X_set)
+
+	def transform(self, X_set):
+		feature_vector_all = []
+		for review in X_set:
+			parsed = self.parser(review)
+			length = len(parsed)
+			adj_pos = 0
+			adj_neg = 0
+			adj_neutral = 0
+			for i in range(0, length - self.n):
+				if parsed[i].orth_ in self.BADNAMES:
+					for j in range(1, self.n):  # Take 2-3 GRAMS !
+						if (parsed[i + j].pos_ == 'ADJ'):
+							if parsed[i + j].orth_ in self.pos:
+								adj_pos += 1;
+							elif parsed[i + j].orth_ in self.neg:
+								adj_neg += 1;
+							else:
+								adj_neutral += 1;
+							break
+			feature_vector_all.append([adj_pos, adj_neg, adj_neutral])
+		# feature_vector_all = np.asarray(feature_vector_all)
+		return feature_vector_all
+
+	def wordsFromFiles(self):
+		with open('positive-words.txt', 'r') as p:
+			pos = p.read()
+		p.close()
+		with open('negative-words.txt', 'r') as n:
+			neg = n.read()
+		n.close()
+		return set(pos.split()), set(neg.split())

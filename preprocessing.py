@@ -95,6 +95,13 @@ def clean_data(data): 				# cleans raw data
 	rprint("Building stopwords dictionary...")
 	clean_reviews, reviews = [], data["review"]
 	stops = set(stopwords.words("english")) # precalculating makes it faster
+	stops_old = set(stops)
+	# REMOVING THE WORDS FROM STOPLIST THAT ARE NEEDED FOR NO-GRAMS
+	NEGATING = ["ain","aren","wasn","weren", "wouldn","hadn","hasn","no", "not", "nor", "isn", "didn","doesn","don","couldn"]
+	for neg in NEGATING:
+		index = stops.index(neg)
+		del(stops[index])
+	stops = set(stops)
 	n, i = len(reviews), 0
 	for rev in reviews:
 		#if i % (n/200) == 0:
