@@ -13,6 +13,7 @@ from nltk.corpus				import stopwords
 from bs4						import BeautifulSoup
 from sklearn.model_selection	import train_test_split
 import nltk, re, cPickle, os.path, sys, gzip
+from cache import *
 
 labelled_data_path   = "data/labeledTrainData.tsv"	 # For supervised learning
 test_data_path 	     = "data/testData.tsv"			 # For Kaggle score
@@ -28,6 +29,7 @@ random_seed_for_splitting = 42;
 
 def get_train_data(ratio = 0.7):	# Loads train data from cache (creates it if needed)
 	preprocess(ratio)
+	auto_cache(get_train_data, ratio)
 	X_train, Y_train = load_train_data()
 	#print "Preprocessing : Completed.                       "
 	return X_train, Y_train
@@ -80,6 +82,8 @@ def preprocess(ratio = 0.7, rebuild_cache = False):
 		save_train_data(X_train, Y_train, ratio)
 		save_test_data(X_test,  Y_test, ratio)
 
+	auto_cache(get_train_test_sets, ratio)
+
 def rprint(str): # Next print overwrites this, eg use for indicate progress
 	sys.stdout.write("  Preprocessing : " + str + "            \r")
 	sys.stdout.flush()
@@ -112,19 +116,6 @@ def get_train_test_sets(ratio = 0.7):
 											train_size=ratio, random_state=random_seed_for_splitting)
 	del data
 	return X_train, X_test, Y_train, Y_test
-		
-# serializes data and saves in a (somewhat) compressed format
-def save_zipped_pickle(obj, filename, protocol=-1):
-	with gzip.open(filename, 'wb') as f:
-		cPickle.dump(obj, f, protocol)
-		f.close()
-
-# loads compressed data and restores original state
-def load_zipped_pickle(filename):	# loads and unpacks
-	with gzip.open(filename, 'rb') as f:
-		loaded_object = cPickle.load(f)
-		f.close()
-		return loaded_object
 
 def save_train_data(X_train, Y_train, ratio = 0.7):
 	rprint("Saving train data to cache    (1  %)")

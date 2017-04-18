@@ -16,6 +16,9 @@ def rprint(str): # Next print overwrites this, eg use for indicate progress
 def evaluate(y_true, y_predicted):
 	# Evaluation metric is the area under the ROC-curve.
 	return roc_auc_score(y_true, y_predicted)
+	
+def create_output(model, feature)
+
 
 
 # Fits model, transforms features, evaluates results, everything
